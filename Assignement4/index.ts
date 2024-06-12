@@ -4,41 +4,30 @@
 * * @since Feb-2024
 * */
 
-
 import { createPrompt } from 'bun-promptx';
 
-// Recursive function to generate Tetranacci sequence
-function tetranacci(n: number, sequence: number[] = []): number[] {
-    if (n <= 0) {
-        return sequence;
-    }
-    const length = sequence.length;
-    if (length === 0 || length === 1 || length === 2) {
-        sequence.push(0);
-    } else if (length === 3) {
-        sequence.push(1);
+async function tetranacci(n: number): Promise<number> {
+    if (n === 0 || n === 1 || n === 2) {
+        return 0;
+    } else if (n === 3) {
+        return 1;
     } else {
-        sequence.push(sequence[length - 1] + sequence[length - 2] + sequence[length - 3] + sequence[length - 4]);
+        return (
+            await Promise.all([
+                tetranacci(n - 1),
+                tetranacci(n - 2),
+                tetranacci(n - 3),
+                tetranacci(n - 4)
+            ])
+        ).reduce((acc, val) => acc + val, 0);
     }
-    return tetranacci(n - 1, sequence);
 }
 
-// Create prompt for user input
-const prompt = createPrompt();
-
-// Function to start the program
-async function start() {
-    const input = await prompt.input('Enter the number of Tetranacci terms to generate: ');
-    const numberOfTerms = parseInt(input, 10);
-
-    if (isNaN(numberOfTerms) || numberOfTerms <= 0) {
-        console.log('Please enter a valid positive number.');
-        return;
+async function printTetranacciSequence() {
+    const count = await prompt('Enter the number of Tetranacci numbers to print: ');
+    for (let i = 0; i < count; i++) {
+        console.log(`Tetranacci(${i}) = ${await tetranacci(i)}`);
     }
-
-    const tetranacciSequence = tetranacci(numberOfTerms);
-    console.log(`Tetranacci sequence of ${numberOfTerms} terms: ${tetranacciSequence.join(', ')}`);
 }
 
-// Start the program
-start();
+printTetranacciSequence().catch(err => console.error(err));

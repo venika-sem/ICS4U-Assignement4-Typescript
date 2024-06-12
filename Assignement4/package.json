@@ -1,0 +1,5 @@
+{ "dependencies": { "@inquirer/prompts": "^5.0.5", "bun-promptx": "^0.2.0", "eslint": "^9.4.0" }, "name": "assignement4", "module": "index.ts", "type": "module", "devDependencies": {
+  "@types/bun": "latest"
+}, "peerDependencies": {
+  "typescript": "^5.0.0"
+} }
